@@ -124,6 +124,7 @@ Example / 例如: `attack` → `4tt4ck`, `att4ck`, `a77ack`
 - v8 Rewrite / v8 重寫: [yinin516](https://github.com/yinin516) with [Claude](https://claude.ai)
 
 ---
+i think dont Enable auto-adjust concurrency is fast
 
 ## License / 授權
 
