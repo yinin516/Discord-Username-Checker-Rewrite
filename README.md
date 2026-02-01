@@ -1,6 +1,6 @@
 # Discord Username Checker v8
 
-An async Discord username availability checker. Fork of [Cloudzik1337's CloudChecker](https://github.com/Cloudzik1337/DiscordUsernameChecker).
+An async Discord username availability checker. A rewritten and modified version based on [Cloudzik1337's CloudChecker](https://github.com/Cloudzik1337/DiscordUsernameChecker).
 
 Discord 用戶名可用性檢查工具（異步版）。基於 [Cloudzik1337 的 CloudChecker](https://github.com/Cloudzik1337/DiscordUsernameChecker) 重寫。
 
