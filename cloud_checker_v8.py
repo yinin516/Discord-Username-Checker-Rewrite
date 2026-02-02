@@ -1,5 +1,5 @@
 """
-Async Cloud Checker v7 - 簡單版
+Async Cloud Checker v8 - 簡單版
 保持原版邏輯，異步提升效率
 被限流的用戶名會換代理重試，直到得到明確結果
 
@@ -129,12 +129,20 @@ class Colors:
 # ==================== 配置 ====================
 
 def load_config():
-    Path("data").mkdir(exist_ok=True)
-    config_path = Path("data/config.json")
-    if not config_path.exists():
-        config_path.write_text("{}")
     try:
-        with open(config_path, "r") as f:
+        if not os.path.exists("data"):
+            os.makedirs("data")
+    except:
+        pass
+    config_path = "data/config.json"
+    if not os.path.exists(config_path):
+        try:
+            with open(config_path, "w", encoding="utf-8") as f:
+                f.write("{}")
+        except:
+            return {}
+    try:
+        with open(config_path, "r", encoding="utf-8") as f:
             return json.load(f)
     except:
         return {}
@@ -142,12 +150,23 @@ def load_config():
 # ==================== 代理 ====================
 
 def load_proxies():
-    Path("data").mkdir(exist_ok=True)
-    proxy_path = Path("data/proxies.txt")
-    if not proxy_path.exists():
-        proxy_path.write_text("")
-    with open(proxy_path, "r", encoding="utf-8") as f:
-        return [line.strip() for line in f if line.strip()]
+    try:
+        if not os.path.exists("data"):
+            os.makedirs("data")
+    except:
+        pass
+    proxy_path = "data/proxies.txt"
+    if not os.path.exists(proxy_path):
+        try:
+            with open(proxy_path, "w", encoding="utf-8") as f:
+                pass
+        except:
+            return []
+    try:
+        with open(proxy_path, "r", encoding="utf-8") as f:
+            return [line.strip() for line in f if line.strip() and not line.startswith("#")]
+    except:
+        return []
 
 # ==================== 核心檢查 ====================
 
@@ -319,9 +338,21 @@ async def main():
     lang_choice = input(TEXTS["en"]["select_lang"]).strip()
     LANG = "zh" if lang_choice == "2" else "en"
     
+    # 安全建立資料夾
     for d in ["data", "results", "logs"]:
-        Path(d).mkdir(exist_ok=True)
-    Path("results/hits.txt").touch()
+        try:
+            if not os.path.exists(d):
+                os.makedirs(d)
+        except Exception as e:
+            print(f"Warning: Cannot create {d} folder: {e}")
+    
+    # 確保 hits.txt 存在
+    try:
+        if not os.path.exists("results/hits.txt"):
+            with open("results/hits.txt", "w", encoding="utf-8") as f:
+                pass
+    except:
+        pass
     
     print_banner()
     
@@ -491,6 +522,16 @@ async def main():
 """)
 
 if __name__ == "__main__":
-    if sys.platform == "win32":
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    asyncio.run(main())
+    # 切換到檔案所在目錄
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    
+    try:
+        if sys.platform == "win32":
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        asyncio.run(main())
+    except Exception as e:
+        import traceback
+        print(f"\n{Colors.RED}Error: {e}{Colors.RESET}")
+        traceback.print_exc()
+    finally:
+        input("\nPress Enter to exit... / 按 Enter 退出...")
